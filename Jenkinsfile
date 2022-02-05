@@ -22,7 +22,7 @@ pipeline {
        withCredentials([string(credentialsId: 'sec', variable: 'doc')]) {
         sh "docker login -u mvpar -p ${doc}"
        }  
-        sh 'docker push mvpar/union:1.0.'
+        sh 'docker push mvpar/union:1.0'
       }    
     }
     stage('Deploy docker-app on host') {
