@@ -4,7 +4,7 @@ pipeline {
     {
     stage('Git checkout') {
       steps {
-        git changelog: false, poll: false, url: 'https://github.com/Anji399/canara.git' 
+        git changelog: false, poll: false, url: 'https://github.com/Anji399/union.git' 
       }
     }
     stage('Package') {
@@ -14,22 +14,22 @@ pipeline {
     }
     stage('Build docker image') {
       steps {
-        sh 'docker build -t mvpar/canara:1.0.0 .'  
+        sh 'docker build -t mvpar/union:1.0 .'  
       }    
     }
     stage('Push docker image') {
       steps {
-       withCredentials([string(credentialsId: 'dockpw', variable: 'dockhubpw')]) {
-        sh "docker login -u mvpar -p ${dockhubpw}"
+       withCredentials([string(credentialsId: 'sec', variable: 'doc')]) {
+        sh "docker login -u mvpar -p ${doc}"
        }  
-        sh 'docker push mvpar/canara:1.0.0'
+        sh 'docker push mvpar/union:1.0.'
       }    
     }
     stage('Deploy docker-app on host') {
       steps {
-        sshagent(['dock']) {
-         sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.7.20'
-         sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.7.20 docker run -d -p 8081:8080 --name mpr mvpar/canara:1.0.0'
+        sshagent(['dockser']) {
+         sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.42.64'
+         sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.42.64 docker run -d -p 8080:8080 --name mpr mvpar/union:1.0'
         }
       }    
     }
